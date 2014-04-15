@@ -80,12 +80,12 @@ abstract class AUser extends Command {
   }
 
   /**
-   * Checks if the specified string is a valid MD5 hash value.
-   * @param md5 string to be checked
+   * Checks if the specified string matches the Modular Crypt Format (MCF).
+   * @param string string to be checked
    * @return result of check
    */
-  static boolean isMD5(final String md5) {
-    return md5 != null && md5.matches("[0-9a-fA-F]{32}");
+  static boolean isMCF(final String string) {
+    return string != null && string.matches("^\\$5\\$[^$]+\\$[0-9a-fA-F]{64}$");
   }
 
   /**

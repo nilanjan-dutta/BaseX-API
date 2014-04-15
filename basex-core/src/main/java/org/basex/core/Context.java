@@ -216,7 +216,7 @@ public final class Context {
    */
   public boolean perm(final Perm p, final MetaData md) {
     final User us = md == null || p == Perm.CREATE || p == Perm.ADMIN ? null :
-      md.users.get(user.name);
+      md.users.get(user.name());
     return (us == null ? user : us).has(p);
   }
 

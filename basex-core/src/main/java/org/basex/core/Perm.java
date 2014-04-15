@@ -31,11 +31,11 @@ public enum Perm {
 
   /**
    * Returns the permission with less privileges.
-   * @param p permission to be compared
+   * @param permission permission to be compared
    * @return permission
    */
-  public Perm min(final Perm p) {
-    return num < p.num ? this : p;
+  public Perm min(final Perm permission) {
+    return num < permission.num ? this : permission;
   }
 
   /**

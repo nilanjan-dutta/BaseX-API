@@ -109,10 +109,10 @@ public final class FNXQuery extends StandardFunc {
     final QueryContext qc = ctx.proc(new QueryContext(ctx));
 
     final Timer to = new Timer(true);
-    final Perm tmp = ctx.context.user.perm;
+    final Perm tmp = ctx.context.user.permission();
     if(expr.length > 2) {
       final Options opts = checkOptions(2, Q_OPTIONS, new XQueryOptions(), ctx);
-      ctx.context.user.perm = Perm.get(opts.get(XQueryOptions.PERMISSION));
+      ctx.context.user.permission(Perm.get(opts.get(XQueryOptions.PERMISSION)));
       // initial memory consumption: perform garbage collection and calculate usage
       Performance.gc(2);
       final long mb = opts.get(XQueryOptions.MEMORY);
@@ -166,7 +166,7 @@ public final class FNXQuery extends StandardFunc {
     } catch(final QueryException ex) {
       throw ex.err() == BASX_PERM ? BXXQ_PERM.get(info, ex.getLocalizedMessage()) : ex;
     } finally {
-      ctx.context.user.perm = tmp;
+      ctx.context.user.permission(tmp);
       ctx.proc(null);
       qc.close();
       to.cancel();

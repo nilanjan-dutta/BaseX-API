@@ -258,9 +258,10 @@ public final class HTTPContext {
     try {
       if(user == null || user.isEmpty() || pass == null || pass.isEmpty())
         throw new LoginException(NOPASSWD);
+
       final Context ctx = new Context(context(), null);
-      ctx.user = ctx.users.get(user);
-      if(ctx.user == null || !ctx.user.password.equals(md5(pass))) throw new LoginException();
+      ctx.user = ctx.users.get(user, pass);
+      if(ctx.user == null) throw new LoginException();
 
       context.blocker.remove(address);
       return ctx;
@@ -304,8 +305,8 @@ public final class HTTPContext {
   public void log(final String info, final Object type) {
     // add evaluation time if any type is specified
     context.log.write(type != null ?
-      new Object[] { address(), context.user.name, type, info, perf } :
-      new Object[] { address(), context.user.name, null, info });
+      new Object[] { address(), context.user.name(), type, info, perf } :
+      new Object[] { address(), context.user.name(), null, info });
   }
 
   // STATIC METHODS =====================================================================

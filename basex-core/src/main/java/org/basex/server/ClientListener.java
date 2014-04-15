@@ -188,7 +188,7 @@ public final class ClientListener extends Thread {
       final String us = in.readString();
       final String pw = in.readString();
       context.user = context.users.get(us);
-      running = context.user != null && md5(context.user.password + ts).equals(pw);
+      running = context.user != null && pw.equals(md5(context.user.hash() + ts));
 
       // write log information
       if(running) {
@@ -539,7 +539,7 @@ public final class ClientListener extends Thread {
    */
   private void log(final Object info, final Object type) {
     // add evaluation time if any type is specified
-    final String user = context.user != null ? context.user.name : "";
+    final String user = context.user != null ? context.user.name() : "";
     final Log log = context.log;
     if(log != null) log.write(type != null ?
       new Object[] { address(), user, type, info, perf } :

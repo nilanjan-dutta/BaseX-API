@@ -6,7 +6,6 @@ import org.basex.core.*;
 import org.basex.core.cmd.*;
 import org.basex.core.parse.*;
 import org.basex.query.*;
-import org.basex.util.*;
 
 /**
  * This class offers methods to locally execute database commands.
@@ -30,7 +29,7 @@ public class LocalSession extends Session {
    * Constructor, specifying login data.
    * @param context context
    * @param user user name
-   * @param pass password
+   * @param pass password hash
    * @throws LoginException login exception
    */
   public LocalSession(final Context context, final String user, final String pass)
@@ -42,7 +41,7 @@ public class LocalSession extends Session {
    * Constructor, specifying login data and an output stream.
    * @param context context
    * @param user user name
-   * @param pass password
+   * @param pass password hash
    * @param output output stream
    * @throws LoginException login exception
    */
@@ -50,8 +49,8 @@ public class LocalSession extends Session {
       final OutputStream output) throws LoginException {
 
     this(context, output);
-    ctx.user = ctx.users.get(user);
-    if(ctx.user == null || !ctx.user.password.equals(Token.md5(pass))) throw new LoginException();
+    ctx.user = ctx.users.get(user, pass);
+    if(ctx.user == null) throw new LoginException();
   }
 
   /**

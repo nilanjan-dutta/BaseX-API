@@ -176,8 +176,8 @@ public final class FNAdmin extends StandardFunc {
     final ValueBuilder vb = new ValueBuilder();
     for(final User u : expr.length == 0 ? ctx.context.users.users(null) :
       checkData(ctx).meta.users.users(ctx.context.users)) {
-      vb.add(new FElem(USER).add(u.name).add(PERMISSION,
-          u.perm.toString().toLowerCase(Locale.ENGLISH)).add(PASSWORD, u.password));
+      vb.add(new FElem(USER).add(u.name()).add(PERMISSION,
+          u.permission().toString().toLowerCase(Locale.ENGLISH)).add(PASSWORD, u.hash()));
     }
     return vb;
   }
@@ -191,7 +191,7 @@ public final class FNAdmin extends StandardFunc {
     final ValueBuilder vb = new ValueBuilder();
     synchronized(ctx.context.sessions) {
       for(final ClientListener sp : ctx.context.sessions) {
-        final String user = sp.context().user.name;
+        final String user = sp.context().user.name();
         final String addr = sp.address();
         final Data data = sp.context().data();
         final FElem elem = new FElem(SESSION).add(USER, user).add(ADDRESS, addr);

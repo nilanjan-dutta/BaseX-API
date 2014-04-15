@@ -26,9 +26,9 @@ public final class AlterUser extends AUser {
   @Override
   protected boolean run() {
     final String user = args[0];
-    final String pass = args[1];
+    final String hash = args[1];
     if(!Databases.validName(user)) return error(NAME_INVALID_X, user);
-    return isMD5(pass) ? context.users.alter(user, pass) ? info(PW_CHANGED_X, user) :
+    return isMCF(hash) ? context.users.alter(user, hash) ? info(PW_CHANGED_X, user) :
       error(UNKNOWN_USER_X, user) : error(PW_NOT_VALID);
   }
 

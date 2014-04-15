@@ -42,15 +42,15 @@ public final class CreateUser extends AUser {
   /**
    * Creates a new user.
    * @param user user name
-   * @param pass password
+   * @param hash password hash
    * @param ctx database context
    * @throws BaseXException database exception
    */
-  private static void create(final String user, final String pass, final Context ctx)
+  private static void create(final String user, final String hash, final Context ctx)
       throws BaseXException {
 
     if(!Databases.validName(user)) throw new BaseXException(NAME_INVALID_X, user);
-    if(!isMD5(pass)) throw new BaseXException(PW_NOT_VALID);
-    if(!ctx.users.create(user, pass)) throw new BaseXException(USER_EXISTS_X, user);
+    if(!isMCF(hash)) throw new BaseXException(PW_NOT_VALID);
+    if(!ctx.users.create(user, hash)) throw new BaseXException(USER_EXISTS_X, user);
   }
 }

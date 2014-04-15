@@ -21,9 +21,9 @@ public final class Password extends AUser {
 
   @Override
   protected boolean run() {
-    final String user = context.user.name;
-    final String pass = args[0];
-    return isMD5(pass) && context.users.alter(user, pass) ?
+    final String user = context.user.name();
+    final String hash = args[0];
+    return isMCF(hash) && context.users.alter(user, hash) ?
         info(PW_CHANGED_X, user) : error(PW_NOT_VALID);
   }
 }

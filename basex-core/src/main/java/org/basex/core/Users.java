@@ -78,12 +78,12 @@ public final class Users {
   /**
    * Stores a user and encrypted password.
    * @param usern user name
-   * @param pass password
+   * @param hash password hash
    * @return success of operation
    */
-  public synchronized boolean create(final String usern, final String pass) {
+  public synchronized boolean create(final String usern, final String hash) {
     // check if user already exists
-    return get(usern) == null && create(new User(usern, pass, Perm.NONE));
+    return get(usern) == null && create(new User(usern, hash, Perm.NONE));
   }
 
   /**
@@ -100,15 +100,15 @@ public final class Users {
   /**
    * Changes the password of a user.
    * @param usern user name
-   * @param pass password
+   * @param hash password hash
    * @return success of operation
    */
-  public synchronized boolean alter(final String usern, final String pass) {
+  public synchronized boolean alter(final String usern, final String hash) {
     // check if user already exists
     final User user = get(usern);
     if(user == null) return false;
 
-    user.password = pass.toLowerCase(Locale.ENGLISH);
+    user.hash(hash);
     write();
     return true;
   }
@@ -126,12 +126,25 @@ public final class Users {
 
   /**
    * Returns a user reference with the specified name.
-   * @param usern user name
+   * @param user user name
    * @return success of operation
    */
-  public synchronized User get(final String usern) {
-    for(final User user : list) if(user.name.equals(usern)) return user;
+  public synchronized User get(final String user) {
+    for(final User u : list) {
+      if(u.name().equals(user)) return u;
+    }
     return null;
+  }
+
+  /**
+   * Returns a user reference with the specified name and password hash.
+   * @param user user name
+   * @param password password hash
+   * @return success of operation
+   */
+  public synchronized User get(final String user, final String password) {
+    final User u = get(user);
+    return u != null && u.authenticates(password) ? u : null;
   }
 
   /**
@@ -142,7 +155,7 @@ public final class Users {
   public synchronized String[] find(final Pattern pattern) {
     final StringList sl = new StringList();
     for(final User u : list) {
-      if(pattern.matcher(u.name).matches()) sl.add(u.name);
+      if(pattern.matcher(u.name()).matches()) sl.add(u.name());
     }
     return sl.toArray();
   }
@@ -156,9 +169,9 @@ public final class Users {
     // skip writing of local rights
     out.writeNum(list.size());
     for(final User user : list) {
-      out.writeToken(token(user.name));
-      out.writeToken(token(user.password));
-      out.writeNum(user.perm.num);
+      out.writeToken(token(user.name()));
+      out.writeToken(token(user.hash()));
+      out.writeNum(user.permission().num);
     }
   }
 
@@ -176,7 +189,7 @@ public final class Users {
 
     for(final User user : users(users)) {
       final TokenList tl = new TokenList();
-      tl.add(user.name);
+      tl.add(user.name());
       tl.add(user.has(Perm.READ) ? "X" : "");
       tl.add(user.has(Perm.WRITE) ? "X" : "");
       if(sz == 5) {
@@ -196,7 +209,7 @@ public final class Users {
   public synchronized User[] users(final Users users) {
     final ArrayList<User> al = new ArrayList<>();
     for(final User user : list) {
-      if(users == null || users.get(user.name) != null) al.add(user);
+      if(users == null || users.get(user.name()) != null) al.add(user);
     }
     return al.toArray(new User[al.size()]);
   }

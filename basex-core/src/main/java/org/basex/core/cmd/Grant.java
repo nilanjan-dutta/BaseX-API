@@ -66,7 +66,7 @@ public final class Grant extends AUser {
 
     // set global permissions
     if(db == null) {
-      context.users.get(user).perm = prm;
+      context.users.get(user).permission(prm);
       context.users.write();
       return info(GRANTED_X_X, args[0], user);
     }
@@ -88,7 +88,7 @@ public final class Grant extends AUser {
       u = context.users.get(user).copy();
       data.meta.users.create(u);
     }
-    u.perm = prm;
+    u.permission(prm);
     data.meta.dirty = true;
     data.finishUpdate();
     Close.close(data, context);

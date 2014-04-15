@@ -1305,8 +1305,27 @@ public final class Token {
    * @return md5 hash
    */
   public static String md5(final String string) {
+    return hash(string, "MD5");
+  }
+
+  /**
+   * Returns an SHA256 hash in lower case.
+   * @param string string to be hashed
+   * @return sha256 hash
+   */
+  public static String sha256(final String string) {
+    return hash(string, "SHA-256");
+  }
+
+  /**
+   * Returns a hash in lower case.
+   * @param string string to be hashed
+   * @param algorithm hashing algorithm
+   * @return hash
+   */
+  private static String hash(final String string, final String algorithm) {
     try {
-      final MessageDigest md = MessageDigest.getInstance("MD5");
+      final MessageDigest md = MessageDigest.getInstance(algorithm);
       return string(hex(md.digest(token(string)), false));
     } catch(final Exception ex) {
       throw Util.notExpected(ex);
