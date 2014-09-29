@@ -218,16 +218,13 @@ namespace BaseXClient
 
     private void Send(Stream s)
     {
-      while (true)
-      {
-          int t = s.ReadByte();
-          if (t == -1) break;
-          if (t == 0x00 || t == 0xFF) stream.WriteByte(Convert.ToByte(0xFF));
-          stream.WriteByte(Convert.ToByte(t));
-      }
+      byte[] byteArray = new byte[s.Length];
+      stream.Flush();
+      byteArray = (s as MemoryStream).ToArray();
+      stream.Write(byteArray, 0, byteArray.Length);
       stream.WriteByte(0);
       info = Receive();
-      if(!Ok())
+      if (!Ok())
       {
         throw new IOException(info);
       }
